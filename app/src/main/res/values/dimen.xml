@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="circle_radius">60dp</dimen>
+    <dimen name="traffic_lights_margin_top">30dp</dimen>
+    <!--Texts -->
+    <dimen name="color_text_size">30sp</dimen>
+</resources>

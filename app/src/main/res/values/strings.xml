@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Traffic</string>
+    <string name="text_start">Старт</string>
+    <string name="text_stop">Стоп</string>
+    <string name="text_dialog_message">Хотите больше узнать о цвете?</string>
+    <string name="text_answer_yes">Да</string>
+    <string name="text_answer_no">Нет</string>
+    <string name="text_color_red">Красный</string>
+    <string name="text_color_yellow">Желтый</string>
+    <string name="text_color_green">Зеленый</string>
+</resources>
