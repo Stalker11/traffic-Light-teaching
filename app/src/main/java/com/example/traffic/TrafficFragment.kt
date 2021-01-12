@@ -17,9 +17,10 @@ class TrafficFragment : Fragment() {
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var finishTimer: Runnable
     private lateinit var activity: MainActivityCalls
+    private var isStarted: Boolean = false
 
     private @Volatile
-    var state: ColorTypes? = null
+    lateinit var state: ColorTypes
 
     companion object {
         fun newInstance(): TrafficFragment {
@@ -42,6 +43,7 @@ class TrafficFragment : Fragment() {
     }
 
     fun startTimer(colorTypes: ColorTypes, time: Int) {
+        isStarted = true
         finishTimer = object : Runnable {
             override fun run() {
                 state = colorTypes
@@ -53,7 +55,7 @@ class TrafficFragment : Fragment() {
                         startTimer(ColorTypes.YELLOW, 3)
                     }
                     ColorTypes.YELLOW -> {
-                        binding.trafficColorRed.visibility = INVISIBLE
+                        binding.trafficColorRed.visibility = VISIBLE
                         binding.trafficColorGreen.visibility = INVISIBLE
                         binding.trafficColorYellow.visibility = VISIBLE
                         startTimer(ColorTypes.GREEN, 3)
@@ -81,31 +83,39 @@ class TrafficFragment : Fragment() {
         binding.trafficColorRed.visibility = VISIBLE
         binding.trafficColorGreen.visibility = VISIBLE
         binding.trafficColorYellow.visibility = VISIBLE
+        isStarted = false
     }
 
     private fun initViews() {
         activity = getActivity() as MainActivityCalls
         binding.trafficColorRed.setOnClickListener {
-            if (binding.trafficColorRed.isVisible && !binding.trafficColorYellow.isVisible && !binding.trafficColorGreen.isVisible) dialogShowingActions(resources?.getString(R.string.text_color_red))
+            if (!binding.trafficColorGreen.isVisible && isStarted && (binding.trafficColorRed.isVisible || binding.trafficColorYellow.isVisible)) dialogShowingActions(
+                resources?.getString(R.string.text_color_red)
+            )
         }
         binding.trafficColorYellow.setOnClickListener {
-            if (binding.trafficColorYellow.isVisible && !binding.trafficColorRed.isVisible && !binding.trafficColorGreen.isVisible) dialogShowingActions(resources?.getString(R.string.text_color_yellow))
+            if (!binding.trafficColorGreen.isVisible && isStarted && (binding.trafficColorYellow.isVisible || binding.trafficColorRed.isVisible)) dialogShowingActions(
+                resources?.getString(R.string.text_color_yellow)
+            )
         }
         binding.trafficColorGreen.setOnClickListener {
-            if (binding.trafficColorGreen.isVisible && !binding.trafficColorRed.isVisible && !binding.trafficColorYellow.isVisible) dialogShowingActions(resources?.getString(R.string.text_color_green))
+            if (binding.trafficColorGreen.isVisible && isStarted && !binding.trafficColorRed.isVisible && !binding.trafficColorYellow.isVisible) dialogShowingActions(
+                resources?.getString(R.string.text_color_green)
+            )
         }
     }
 
     fun pauseTimer() {
         handler.removeCallbacks(finishTimer)
+        isStarted = false
     }
 
     fun continueTimer() {
         handler.removeCallbacksAndMessages(null)
-        startTimer(state!!, 0)
+        startTimer(state, 0)
     }
 
-    private fun dialogShowingActions(text:String) {
+    private fun dialogShowingActions(text: String) {
         handler.removeCallbacks(finishTimer)
         activity.showDialog(text)
     }
